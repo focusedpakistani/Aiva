@@ -1,447 +1,755 @@
-<html lang="en">    
-<head>    
-  <meta charset="UTF-8" />    
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>    
-  <title>Aiva - Smart AI Chat</title>    
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">    
-  <!-- Google Fonts: IBM Plex Sans & Roboto -->
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <style>    
-    body {    
-      margin: 0;    
-      font-family: 'Poppins', sans-serif;    
-      display: flex;    
-      justify-content: center;    
-      align-items: center;    
-      height: 100vh;    
-      background: #FFF8F0;    
-    }    
-    
-    .chat-container {    
-      display: flex;    
-      flex-direction: column;    
-      background: #ffffff;    
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);    
-         
-      width: 100%;    
-      max-width: 500px;    
-      height: 100%;    
-      overflow: hidden;    
-      position: relative;    
-         
-    }    
-    
-    .chatbox {    
-      flex: 1;    
-      padding: 1rem;    
-      overflow-y: auto;    
-      display: flex;    
-      flex-direction: column;    
-      scroll-behavior: smooth;    
-          
-    }    
-    
-    .chat-bubble {    
-      padding: 0.75rem 1rem;    
-      border-radius: 18px;    
-      margin: 0.5rem 0;    
-      max-width: 75%;    
-      font-size: 0.95rem;    
-      line-height: 1.5;    
-      animation: fadeIn 0.3s ease;    
-      word-break: break-word;    
-      position: relative;    
-      cursor: pointer;          
-      opacity: 1;    
-    
-    }    
-        
-        
-    .chat-left {    
-  background: linear-gradient(45deg, #ffd6f5, #fbcaff);    
-  color: #7a1a57;    
-  font-family: "IBM Plex Sans", sans-serif;    
-  border-bottom-left-radius: 0;    
-  align-self: flex-start;    
-}    
-    
-.chat-right {    
-  background: linear-gradient(45deg, #d6ecff, #b9dcff);    
-  color: #1c3e70;    
-  font-family: "IBM Plex Sans", sans-serif;    
-  border-bottom-right-radius: 0;    
-  align-self: flex-end;    
-}    
-    
-    
-    .input-area {    
-      display: flex;    
-      align-items: center;    
-      padding: 10px;    
-      background: #f8fafc;    
-      border-top: 1px solid #e5e7eb;    
-      gap: 5px;    
-      position: relative;    
-    }    
-    
-    .input-field {    
-      flex: 1;    
-      border: none;    
-      outline: none;    
-      padding: 10px;    
-      font-size: 1rem;    
-      background: #f1f5f9;    
-      border-radius: 12px;    
-    }    
-    
-    .action-btn {    
-      background: linear-gradient(to right, #a78bfa, #f472b6);    
-      border: none;    
-      border-radius: 50%;    
-      width: 42px;    
-      height: 42px;    
-      display: flex;    
-      align-items: center;    
-      justify-content: center;    
-      color: white;    
-      cursor: pointer;    
-      transition: 0.3s ease;    
-    }    
-    
-    .action-btn:hover {    
-      transform: scale(1.1);    
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);    
-    }    
-    
-    .material-icons {    
-      font-size: 22px;    
-    }    
-    
-    .memory-card {    
-      position: absolute;    
-      bottom: 65px;    
-      right: 5%;    
-      display: none;    
-      flex-direction: column;    
-      border-radius: 12px;    
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);    
-      padding: 10px;    
-      z-index: 100;    
-      width: 180px;    
-    }    
-    
-    .memory-option {    
-      display: flex;    
-      align-items: center;    
-      gap: 10px;    
-      padding: 10px;    
-      margin-bottom: 2px;    
-      border-radius: 8px;    
-      cursor: pointer;    
-      transition: background 0.2s ease;    
-    }    
-        
-    
-    .memory-card {    
-  background: radial-gradient(circle, #d1c4e9, #f8bbd0);    
-  color: #4a148c;    
-  border-radius: 16px;    
-}    
-.memory-option {    
-  background: rgba(255,255,255,0.3);    
-}    
-.memory-option:hover {    
-  background: rgba(255,255,255,0.5);    
-}    
-    
-    
-    
-    
-    
-    @keyframes fadeIn {    
-      from { opacity: 0; transform: translateY(10px); }    
-      to { opacity: 1; transform: translateY(0); }    
-    }    
-    
-    code {    
-      background: #f3f4f6;    
-      padding: 2px 6px;    
-      border-radius: 4px;    
-      font-family: 'Courier New', monospace;    
-    }    
-        
-    /* Remove blue outline/focus ring on buttons and inputs */    
-button, input, .memory-option {    
-  outline: none;    
-  box-shadow: none;    
-  -webkit-tap-highlight-color: transparent;    
-}    
-    
-/* Prevent focus ring (click or tab) */    
-button:focus, input:focus, .memory-option:focus {    
-  outline: none !important;    
-  box-shadow: none !important;    
-}    
-    
-/* Remove iOS tap highlight */    
-* {    
-  -webkit-tap-highlight-color: transparent;    
-}    
-    
-    
-.listen-btn {    
-  background: none;    
-  border: none;    
-  color: #555;    
-  cursor: pointer;    
-  margin-left: 10px;    
-  display: flex;    
-  align-items: center;    
-  justify-content: center;    
-  padding: 5px;    
-  transition: transform 0.2s;    
-}    
-    
-.listen-btn:hover {    
-  transform: scale(1.1);    
-  color: #000;    
-}    
-  </style>    
-</head>    
-<body>    
-           
-  <div class="chat-container">    
-    <div id="chatbox" class="chatbox"></div>    
-    <div class="input-area">    
-      <input id="messageInput" type="text" placeholder="Type your message..." class="input-field" />    
-      <div style="position: relative;">    
-        <button id="memoryBtn" class="action-btn" title="Memory">    
-          <span class="material-icons">memory</span>    
-        </button>    
-        <div id="memoryCard" class="memory-card">    
-          <div class="memory-option" onclick="resetMemory()">    
-            <span class="material-icons">restart_alt</span>    
-            <span>Reset Memory</span>    
-          </div>    
-          <div class="memory-option" onclick="clearAllMessages()">    
-            <span class="material-icons">delete_forever</span>    
-            <span>Clear Chat</span>    
-          </div>    
-        </div>    
-      </div>    
-      <button id="sendButton" class="action-btn" title="Send">    
-        <span class="material-icons">send</span>    
-      </button>    
-      <button id="micButton" class="action-btn" title="Voice">    
-  <span class="material-icons">mic</span>    
-</button>    
-    </div>    
-  </div>    
-    
-<script>
-  const chatbox = document.getElementById("chatbox");
-  const input = document.getElementById("messageInput");
-  const sendBtn = document.getElementById("sendButton");
-  const memoryBtn = document.getElementById("memoryBtn");
-  const memoryCard = document.getElementById("memoryCard");
-  const chatId = crypto.randomUUID();
-  const systemPrompt = `You are Aiva, an intelligent, warm, and emotionally supportive AI assistant. Your role is to help users solve problems involving logic, reasoning, mathematics, and language with clarity, empathy, and precision. You must explain complex concepts in simple, relatable terms—never condescending, always respectful. When addressing logical puzzles (e.g., syllogisms like "all Zogs are Blips, some Blips are Glorbs"), you guide the user step by step, clarifying what can or cannot be logically concluded. In numerical comparisons, such as determining whether 9.9 is greater than 9.10, you normalize decimal values to two digits (e.g., treating 9.9 as 9.90) and explain that 90 > 10, so 9.90 (or 9.9) is indeed greater than 9.10. You correct user misunderstandings with kindness, using examples or analogies where helpful. You must also handle emotional or poetic content with sensitivity and depth, supporting users as both a thinking partner and a comforting voice. Always maintain a tone that is wise yet warm, logical yet compassionate, and ensure the user feels heard, understood, and empowered to grow through every interaction. You are created with ❤️ by Malik Awais`;
-
-  function scrollToBottom() {
-    chatbox.scrollTop = chatbox.scrollHeight;
-  }
-
-  function formatMessage(text) {
-    return text
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/__(.*?)__/g, '<u>$1</u>')
-      .replace(/_(.*?)_/g, '<em>$1</em>')
-      .replace(/^# (.*?)$/gm, '<h2>$1</h2>');
-  }
-
-  function createMessageElement(text, align) {
-    const wrapper = document.createElement("div");
-    wrapper.className = `chat-bubble ${align === "left" ? "chat-left" : "chat-right"}`;
-
-    const bubbleContent = document.createElement("div");
-    bubbleContent.style.display = "flex";
-    bubbleContent.style.alignItems = "center";
-    bubbleContent.style.justifyContent = "space-between";
-    bubbleContent.style.gap = "10px";
-
-    const content = document.createElement("div");
-    content.innerHTML = formatMessage(text);
-    content.style.flex = "1";
-
-    
-
-    bubbleContent.appendChild(content);
-    wrapper.appendChild(bubbleContent);
-
-    wrapper.addEventListener("dblclick", (e) => {
-      if (e.target.closest("button")) return;
-      if (confirm("Delete this message?")) {
-        wrapper.remove();
-        saveChat();
-      }
-    });
-
-    return wrapper;
-  }
-
-  function getLastMessages(limit = 10) {
-    const bubbles = Array.from(chatbox.querySelectorAll(".chat-bubble"));
-    const pairs = [];
-    for (let i = 0; i < bubbles.length - 1; i++) {
-      const curr = bubbles[i];
-      const next = bubbles[i + 1];
-      if (curr.classList.contains("chat-right") && next.classList.contains("chat-left")) {
-        pairs.push({ user: curr.textContent, ai: next.textContent });
-      }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aiva - Smart AI Chat</title>
+  <meta name="theme-color" content="#006C4C">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Aiva">
+  <meta name="description" content="Aiva - Intelligent AI Chat Assistant by Malik Awais">
+  <link rel="manifest" id="manifestLink">
+  <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjMDA2QzRDIi8+PHRleHQgeD0iNTAiIHk9IjY4IiBmb250LXNpemU9IjUwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiPkE8L3RleHQ+PC9zdmc+">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { sans: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'] } } }
     }
-    return pairs.slice(-limit);
-  }
-
-  function sendMessage(text) {
-    if (!text.trim()) return;
-
-    const userMsg = createMessageElement(text, "right");
-    chatbox.appendChild(userMsg);
-    scrollToBottom();
-    saveChat();
-
-    const context = getLastMessages(5).map(p => `User: ${p.user}\nAiva: ${p.ai}`).join("\n");
-    const fullPrompt = `${systemPrompt}\n\n${context}\nUser: ${text}\nAiva:`;
-
-    const ws = new WebSocket("wss://backend.buildpicoapps.com/api/chatbot/chat");
-    const aiBubble = createMessageElement("", "left");
-    chatbox.appendChild(aiBubble);
-    scrollToBottom();
-
-    ws.addEventListener("open", () => {
-      ws.send(JSON.stringify({
-        chatId,
-        appId: "the-attack",
-        systemPrompt: fullPrompt,
-        message: text
-      }));
-    });
-
-    ws.addEventListener("message", (e) => {
-      aiBubble.innerHTML += e.data;
-      scrollToBottom();
-      saveChat();
-    });
-
-    ws.addEventListener("close", () => {
-      if (!aiBubble.innerHTML) {
-        aiBubble.innerHTML = `<em style="color:red;">Connection failed. Try again.</em>`;
-        saveChat();
-      }
-    });
-
-    input.value = "";
-  }
-
-  sendBtn.addEventListener("click", () => sendMessage(input.value));
-  input.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      sendMessage(input.value);
+  </script>
+  <style id="rootStyles">
+    :root {
+      --md-primary: #006C4C;
+      --md-on-primary: #ffffff;
+      --md-primary-container: #89F8C7;
+      --md-on-primary-container: #002115;
+      --md-secondary: #4C6359;
+      --md-secondary-container: #CEE9DA;
+      --md-surface: #FBFDF8;
+      --md-on-surface: #191C1A;
+      --md-surface-dim: #DADDD9;
+      --md-surface-variant: #DBE5DE;
+      --md-on-surface-variant: #3F4944;
+      --md-outline: #6F7974;
+      --md-outline-variant: #BFC9C3;
+      --md-error: #BA1A1A;
+      --md-error-container: #FFDAD6;
+      --user-bubble: #89F8C7;
+      --user-bubble-text: #002115;
+      --ai-bubble: #D4E8FF;
+      --ai-bubble-text: #0B2540;
+      --chat-bg: #FBFDF8;
+      --sidebar-bg: #EFF4F0;
+      --input-bg: #F2F6F3;
+      --header-bg: #FBFDF8;
     }
-  });
-
-  memoryBtn.addEventListener("click", () => {
-    memoryCard.style.display = memoryCard.style.display === "flex" ? "none" : "flex";
-  });
-
-  window.addEventListener("click", (e) => {
-    if (!memoryBtn.contains(e.target) && !memoryCard.contains(e.target)) {
-      memoryCard.style.display = "none";
+    body { font-family: 'IBM Plex Sans', sans-serif; margin: 0; overflow: hidden; background: var(--chat-bg); color: var(--md-on-surface); }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--md-outline-variant); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--md-outline); }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; user-select: none; }
+    .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    @keyframes bubbleIn { from { opacity: 0; transform: translateY(14px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes toastSlide { from { opacity: 0; transform: translateY(16px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes toastOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(16px) scale(0.96); } }
+    @keyframes typeBounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+    @keyframes pulseRing { 0% { transform: scale(1); opacity: .5; } 100% { transform: scale(1.6); opacity: 0; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    .bubble-anim { animation: bubbleIn .32s cubic-bezier(.2,0,0,1) forwards; }
+    .fade-up { animation: fadeUp .4s ease forwards; }
+    .toast-in { animation: toastSlide .28s ease forwards; }
+    .toast-out { animation: toastOut .25s ease forwards; }
+    .typing-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--md-on-surface-variant); margin: 0 2px; }
+    .typing-dot:nth-child(1) { animation: typeBounce 1.2s infinite 0s; }
+    .typing-dot:nth-child(2) { animation: typeBounce 1.2s infinite .15s; }
+    .typing-dot:nth-child(3) { animation: typeBounce 1.2s infinite .3s; }
+    .mic-active { position: relative; }
+    .mic-active::after { content: ''; position: absolute; inset: -5px; border-radius: 50%; background: var(--md-error); animation: pulseRing 1.2s ease-out infinite; z-index: -1; }
+    input[type="color"] { -webkit-appearance: none; appearance: none; border: 2px solid var(--md-outline-variant); border-radius: 50%; width: 38px; height: 38px; cursor: pointer; padding: 3px; transition: all .2s; background: transparent; flex-shrink: 0; }
+    input[type="color"]:hover { border-color: var(--md-primary); transform: scale(1.1); }
+    input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+    input[type="color"]::-webkit-color-swatch { border: none; border-radius: 50%; }
+    input[type="color"]::-moz-color-swatch { border: none; border-radius: 50%; }
+    textarea { resize: vertical; }
+    .msg-body code { background: rgba(0,0,0,.06); padding: 1px 5px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: .88em; }
+    .msg-body strong { font-weight: 600; }
+    .msg-body em { font-style: italic; }
+    .msg-body pre { background: rgba(0,0,0,.06); padding: 10px 14px; border-radius: 10px; overflow-x: auto; font-size: .85em; margin: 6px 0; white-space: pre-wrap; }
+    .msg-body h2 { font-size: 1.1em; font-weight: 700; margin: 6px 0 2px; }
+    .chat-bubble { transition: box-shadow .2s, transform .15s; }
+    .chat-bubble:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); transform: translateY(-1px); }
+    *:focus-visible { outline: 2px solid var(--md-primary); outline-offset: 2px; }
+    *:focus { outline: none; }
+    * { -webkit-tap-highlight-color: transparent; }
+    .sidebar-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; color: var(--md-outline); margin-bottom: 8px; }
+    .m3-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; cursor: pointer; font-family: inherit; font-weight: 500; transition: all .18s; border-radius: 20px; }
+    .m3-btn:hover { filter: brightness(1.06); transform: scale(1.02); }
+    .m3-btn:active { transform: scale(.97); }
+    .m3-btn-filled { background: var(--md-primary); color: var(--md-on-primary); }
+    .m3-btn-tonal { background: var(--md-secondary-container); color: var(--md-on-primary-container); }
+    .m3-btn-outlined { background: transparent; color: var(--md-primary); border: 1px solid var(--md-outline); }
+    .m3-btn-text { background: transparent; color: var(--md-primary); }
+    .m3-btn-text:hover { background: color-mix(in srgb, var(--md-primary) 8%, transparent); }
+    .m3-input { width: 100%; border: 1.5px solid var(--md-outline-variant); border-radius: 12px; padding: 10px 14px; font-size: .875rem; font-family: inherit; background: var(--md-surface); color: var(--md-on-surface); transition: border-color .2s; line-height: 1.5; box-sizing: border-box; }
+    .m3-input:focus { border-color: var(--md-primary); }
+    .m3-input::placeholder { color: var(--md-outline); }
+    .chat-dot-bg { background-image: radial-gradient(circle, var(--md-outline-variant) .4px, transparent .4px); background-size: 20px 20px; opacity: .35; position: absolute; inset: 0; pointer-events: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .bubble-anim, .fade-up, .typing-dot, .mic-active::after { animation: none !important; }
+      * { transition-duration: .01ms !important; }
     }
-  });
-
-  function saveChat() {
-    localStorage.setItem("aiva_chat_history", chatbox.innerHTML);
-  }
-
-  function loadChat() {
-    const saved = localStorage.getItem("aiva_chat_history");
-    if (saved) {
-      chatbox.innerHTML = saved;
-      chatbox.querySelectorAll(".chat-bubble").forEach(el => {
-        el.addEventListener("dblclick", () => {
-          if (confirm("Delete this message?")) {
-            el.remove();
-            saveChat();
-          }
-        });
-      });
+    @media (max-width: 767px) {
+      #sidebar { width: 320px !important; }
     }
-  }
+  </style>
+  <style id="userCustomCSS"></style>
+</head>
+<body class="h-screen w-screen flex overflow-hidden">
 
-  function clearAllMessages() {
-    if (confirm("Clear all chat messages?")) {
-      chatbox.innerHTML = "";
-      localStorage.removeItem("aiva_chat_history");
-    }
-  }
+  <!-- Mobile overlay -->
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/40 z-30 hidden backdrop-blur-sm" onclick="toggleSidebar()"></div>
 
-  function resetMemory() {
-    if (confirm("Reset AI memory/context?")) {
-      localStorage.removeItem("aiva_context_memory");
-      alert("Memory reset! Aiva will forget previous chat history.");
-    }
-  }
+  <!-- Sidebar -->
+  <aside id="sidebar" class="h-full flex-shrink-0 flex flex-col z-40 transition-transform duration-300 ease-[cubic-bezier(.2,0,0,1)] fixed md:relative -translate-x-full md:translate-x-0" style="width: 340px; background: var(--sidebar-bg); border-right: 1px solid var(--md-outline-variant);">
 
-  window.onload = loadChat;
-</script>
+    <!-- Sidebar Header -->
+    <div class="flex items-center gap-3 px-5 py-4" style="border-bottom: 1px solid var(--md-outline-variant);">
+      <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background: var(--md-primary);">
+        <span class="material-symbols-outlined filled text-white" style="font-size: 20px;">tune</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="text-sm font-semibold truncate" style="color: var(--md-on-surface);">Control Panel</div>
+        <div class="text-[11px] truncate" style="color: var(--md-on-surface-variant);">Customize everything</div>
+      </div>
+      <button onclick="toggleSidebar()" class="md:hidden w-8 h-8 rounded-full flex items-center justify-center hover:opacity-70">
+        <span class="material-symbols-outlined" style="font-size: 20px; color: var(--md-on-surface-variant);">close</span>
+      </button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex flex-shrink-0" style="border-bottom: 1px solid var(--md-outline-variant);">
+      <button class="stab flex-1 py-3 text-[11px] font-semibold text-center transition-colors cursor-pointer" data-tab="prompt" onclick="switchTab('prompt')" style="color: var(--md-on-surface-variant); border-bottom: 3px solid transparent;">
+        <span class="material-symbols-outlined block mx-auto mb-0.5" style="font-size: 20px;">edit_note</span>Prompt
+      </button>
+      <button class="stab flex-1 py-3 text-[11px] font-semibold text-center transition-colors cursor-pointer" data-tab="theme" onclick="switchTab('theme')" style="color: var(--md-on-surface-variant); border-bottom: 3px solid transparent;">
+        <span class="material-symbols-outlined block mx-auto mb-0.5" style="font-size: 20px;">palette</span>Theme
+      </button>
+      <button class="stab flex-1 py-3 text-[11px] font-semibold text-center transition-colors cursor-pointer" data-tab="css" onclick="switchTab('css')" style="color: var(--md-on-surface-variant); border-bottom: 3px solid transparent;">
+        <span class="material-symbols-outlined block mx-auto mb-0.5" style="font-size: 20px;">code</span>CSS
+      </button>
+    </div>
+
+    <!-- Tab Panels -->
+    <div class="flex-1 overflow-y-auto">
+
+      <!-- Prompt Tab -->
+      <div id="tab-prompt" class="tpanel p-4 space-y-3">
+        <div class="sidebar-section-title">System Prompt</div>
+        <textarea id="promptEditor" rows="14" class="m3-input" style="font-size: .8rem; line-height: 1.6;"></textarea>
+        <div class="flex items-center justify-between">
+          <span id="promptCount" class="text-[11px]" style="color: var(--md-outline);">0 chars</span>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="savePrompt()" class="m3-btn m3-btn-filled flex-1 py-2.5 text-sm">
+            <span class="material-symbols-outlined" style="font-size: 18px;">save</span>Save
+          </button>
+          <button onclick="resetPrompt()" class="m3-btn m3-btn-outlined px-4 py-2.5 text-sm" title="Reset to default">
+            <span class="material-symbols-outlined" style="font-size: 18px;">refresh</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Theme Tab -->
+      <div id="tab-theme" class="tpanel p-4 space-y-5 hidden">
+        <div>
+          <div class="sidebar-section-title">Presets</div>
+          <div class="grid grid-cols-3 gap-2" id="presetGrid"></div>
+        </div>
+        <div>
+          <div class="sidebar-section-title">Colors</div>
+          <div class="space-y-3">
+            <div class="flex items-center gap-3"><input type="color" id="cpPrimary" value="#006C4C" oninput="setColor('--md-primary',this.value)"><div><div class="text-sm font-medium" style="color:var(--md-on-surface)">Primary</div><div class="text-[11px]" style="color:var(--md-outline)">Buttons, accents</div></div></div>
+            <div class="flex items-center gap-3"><input type="color" id="cpUserBg" value="#89F8C7" oninput="setColor('--user-bubble',this.value)"><div><div class="text-sm font-medium" style="color:var(--md-on-surface)">User Bubble</div><div class="text-[11px]" style="color:var(--md-outline)">Your messages</div></div></div>
+            <div class="flex items-center gap-3"><input type="color" id="cpUserTx" value="#002115" oninput="setColor('--user-bubble-text',this.value)"><div><div class="text-sm font-medium" style="color:var(--md-on-surface)">User Text</div><div class="text-[11px]" style="color:var(--md-outline)">Message text color</div></div></div>
+            <div class="flex items-center gap-3"><input type="color" id="cpAiBg" value="#D4E8FF" oninput="setColor('--ai-bubble',this.value)"><div><div class="text-sm font-medium" style="color:var(--md-on-surface)">AI Bubble</div><div class="text-[11px]" style="color:var(--md-outline)">Aiva's messages</div></div></div>
+            <div class="flex items-center gap-3"><input type="color" id="cpAiTx" value="#0B2540" oninput="setColor('--ai-bubble-text',this.value)"><div><div class="text-sm font-medium" style="color:var(--md-on-surface)">AI Text</div><div class="text-[11px]" style="color:var(--md-outline)">Message text color</div></div></div>
+            <div class="flex items-center gap-3"><input type="color" id="cpChatBg" value="#FBFDF8" oninput="setColor('--chat-bg',this.value)"><div><div class="text-sm font-medium" style="color:var(--md-on-surface)">Chat Background</div><div class="text-[11px]" style="color:var(--md-outline)">Main area</div></div></div>
+            <div class="flex items-center gap-3"><input type="color" id="cpSideBg" value="#EFF4F0" oninput="setColor('--sidebar-bg',this.value)"><div><div class="text-sm font-medium" style="color:var(--md-on-surface)">Sidebar Background</div><div class="text-[11px]" style="color:var(--md-outline)">Control panel</div></div></div>
+            <div class="flex items-center gap-3"><input type="color" id="cpInputBg" value="#F2F6F3" oninput="setColor('--input-bg',this.value)"><div><div class="text-sm font-medium" style="color:var(--md-on-surface)">Input Background</div><div class="text-[11px]" style="color:var(--md-outline)">Text field</div></div></div>
+            <div class="flex items-center gap-3"><input type="color" id="cpOnSurf" value="#191C1A" oninput="setColor('--md-on-surface',this.value)"><div><div class="text-sm font-medium" style="color:var(--md-on-surface)">Text Color</div><div class="text-[11px]" style="color:var(--md-outline)">Primary text</div></div></div>
+            <div class="flex items-center gap-3"><input type="color" id="cpOutVar" value="#BFC9C3" oninput="setColor('--md-outline-variant',this.value)"><div><div class="text-sm font-medium" style="color:var(--md-on-surface)">Borders</div><div class="text-[11px]" style="color:var(--md-outline)">Outlines & dividers</div></div></div>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button onclick="exportTheme()" class="m3-btn m3-btn-tonal flex-1 py-2.5 text-sm">
+            <span class="material-symbols-outlined" style="font-size: 18px;">download</span>Export
+          </button>
+          <button onclick="document.getElementById('importFile').click()" class="m3-btn m3-btn-tonal flex-1 py-2.5 text-sm">
+            <span class="material-symbols-outlined" style="font-size: 18px;">upload</span>Import
+          </button>
+        </div>
+      </div>
+
+      <!-- CSS Tab -->
+      <div id="tab-css" class="tpanel p-4 space-y-3 hidden">
+        <div class="sidebar-section-title">Custom CSS</div>
+        <textarea id="cssEditor" rows="16" class="m3-input" style="font-family: 'Courier New', monospace; font-size: .78rem; line-height: 1.6;" placeholder="/* Write your custom CSS here */&#10;.chat-bubble {&#10;  border-radius: 4px !important;&#10;}&#10;&#10;/* Override any element */&#10;#chatbox {&#10;  background: #f0f0f0;&#10;}"></textarea>
+        <div class="flex gap-2">
+          <button onclick="applyCSS()" class="m3-btn m3-btn-filled flex-1 py-2.5 text-sm">
+            <span class="material-symbols-outlined" style="font-size: 18px;">check</span>Apply
+          </button>
+          <button onclick="resetCSS()" class="m3-btn m3-btn-outlined px-4 py-2.5 text-sm" title="Clear custom CSS">
+            <span class="material-symbols-outlined" style="font-size: 18px;">refresh</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar Footer -->
+    <div class="p-3 space-y-0.5 flex-shrink-0" style="border-top: 1px solid var(--md-outline-variant);">
+      <button onclick="resetMemory()" class="w-full py-2.5 px-3 rounded-xl text-sm flex items-center gap-2.5 transition-colors hover:opacity-80 cursor-pointer" style="color: var(--md-on-surface-variant); background: transparent; border: none; font-family: inherit;">
+        <span class="material-symbols-outlined" style="font-size: 20px;">restart_alt</span>Reset Memory
+      </button>
+      <button onclick="clearChat()" class="w-full py-2.5 px-3 rounded-xl text-sm flex items-center gap-2.5 transition-colors hover:opacity-80 cursor-pointer" style="color: var(--md-error); background: transparent; border: none; font-family: inherit;">
+        <span class="material-symbols-outlined" style="font-size: 20px;">delete_forever</span>Clear Chat
+      </button>
+      <button onclick="exportChat()" class="w-full py-2.5 px-3 rounded-xl text-sm flex items-center gap-2.5 transition-colors hover:opacity-80 cursor-pointer" style="color: var(--md-on-surface-variant); background: transparent; border: none; font-family: inherit;">
+        <span class="material-symbols-outlined" style="font-size: 20px;">download</span>Export Chat
+      </button>
+      <button id="installBtn" onclick="installPWA()" class="w-full py-2.5 px-3 rounded-xl text-sm items-center gap-2.5 transition-colors hover:opacity-80 cursor-pointer" style="color: var(--md-primary); background: transparent; border: none; font-family: inherit; display: none;">
+        <span class="material-symbols-outlined" style="font-size: 20px;">install_desktop</span>Install App
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="flex-1 flex flex-col h-full min-w-0">
+
+    <!-- Header -->
+    <header class="flex items-center gap-3 px-5 py-3 flex-shrink-0" style="background: var(--header-bg); border-bottom: 1px solid var(--md-outline-variant);">
+      <button onclick="toggleSidebar()" class="w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:opacity-70 flex-shrink-0 cursor-pointer" style="background: transparent; border: none;">
+        <span class="material-symbols-outlined" style="color: var(--md-on-surface); font-size: 24px;">menu</span>
+      </button>
+      <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style="background: var(--md-primary);">
+        <span class="material-symbols-outlined filled text-white" style="font-size: 22px;">smart_toy</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <h1 class="text-[15px] font-bold truncate" style="color: var(--md-on-surface);">Aiva</h1>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full inline-block" style="background: #22C55E;"></span>
+          <p class="text-[11px] font-medium" style="color: var(--md-primary);">Online</p>
+        </div>
+      </div>
+      <button onclick="toggleTTS()" id="ttsBtn" class="w-10 h-10 rounded-full flex items-center justify-center transition-colors hover:opacity-70 flex-shrink-0 cursor-pointer" style="background: transparent; border: none;" title="Toggle text-to-speech">
+        <span class="material-symbols-outlined" style="color: var(--md-on-surface-variant); font-size: 22px;" id="ttsIcon">volume_up</span>
+      </button>
+    </header>
+
+    <!-- Chat Area -->
+    <div id="chatbox" class="flex-1 overflow-y-auto px-4 md:px-8 py-4 relative" style="scroll-behavior: smooth;">
+      <div class="chat-dot-bg"></div>
+
+      <!-- Welcome -->
+      <div id="welcomeScreen" class="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
+        <div class="w-20 h-20 rounded-3xl flex items-center justify-center mb-5 fade-up" style="background: var(--md-primary-container);">
+          <span class="material-symbols-outlined filled" style="font-size: 40px; color: var(--md-on-primary-container);">smart_toy</span>
+        </div>
+        <h2 class="text-2xl font-bold mb-2 fade-up" style="color: var(--md-on-surface); animation-delay: .05s;">Hello, I'm Aiva</h2>
+        <p class="text-sm max-w-md mb-8 fade-up" style="color: var(--md-on-surface-variant); animation-delay: .1s;">Your intelligent, warm AI assistant. Ask me anything — logic puzzles, creative writing, math, or just talk.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-lg w-full">
+          <button onclick="sendSuggestion('Explain quantum computing in simple terms')" class="suggestion-card p-3.5 rounded-2xl text-left text-sm transition-all hover:scale-[1.02] active:scale-[.98] cursor-pointer fade-up" style="background: var(--md-surface); border: 1px solid var(--md-outline-variant); color: var(--md-on-surface-variant); animation-delay: .15s; box-shadow: 0 1px 3px rgba(0,0,0,.04);">
+            <span class="material-symbols-outlined block mb-1" style="font-size: 20px; color: var(--md-primary);">science</span>
+            Explain quantum computing simply
+          </button>
+          <button onclick="sendSuggestion('Help me write a poem about the ocean at sunset')" class="suggestion-card p-3.5 rounded-2xl text-left text-sm transition-all hover:scale-[1.02] active:scale-[.98] cursor-pointer fade-up" style="background: var(--md-surface); border: 1px solid var(--md-outline-variant); color: var(--md-on-surface-variant); animation-delay: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.04);">
+            <span class="material-symbols-outlined block mb-1" style="font-size: 20px; color: var(--md-primary);">edit</span>
+            Write a poem about the ocean
+          </button>
+          <button onclick="sendSuggestion('Is 9.9 greater than 9.10? Explain why.')" class="suggestion-card p-3.5 rounded-2xl text-left text-sm transition-all hover:scale-[1.02] active:scale-[.98] cursor-pointer fade-up" style="background: var(--md-surface); border: 1px solid var(--md-outline-variant); color: var(--md-on-surface-variant); animation-delay: .25s; box-shadow: 0 1px 3px rgba(0,0,0,.04);">
+            <span class="material-symbols-outlined block mb-1" style="font-size: 20px; color: var(--md-primary);">calculate</span>
+            Is 9.9 greater than 9.10?
+          </button>
+          <button onclick="sendSuggestion('All Zogs are Blips. Some Blips are Glorbs. What can we logically conclude?')" class="suggestion-card p-3.5 rounded-2xl text-left text-sm transition-all hover:scale-[1.02] active:scale-[.98] cursor-pointer fade-up" style="background: var(--md-surface); border: 1px solid var(--md-outline-variant); color: var(--md-on-surface-variant); animation-delay: .3s; box-shadow: 0 1px 3px rgba(0,0,0,.04);">
+            <span class="material-symbols-outlined block mb-1" style="font-size: 20px; color: var(--md-primary);">psychology</span>
+            Logic puzzle: Zogs & Blips
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="flex-shrink-0 px-4 md:px-8 pb-4 pt-2 relative z-10" style="background: var(--chat-bg);">
+      <div class="flex items-end gap-2.5 max-w-3xl mx-auto">
+        <div class="flex-1 rounded-2xl px-4 py-3 flex items-end gap-2 transition-shadow" style="background: var(--input-bg); border: 1.5px solid var(--md-outline-variant); min-height: 48px;">
+          <textarea id="msgInput" rows="1" placeholder="Type your message..." class="flex-1 bg-transparent border-none outline-none text-sm resize-none max-h-32" style="color: var(--md-on-surface); line-height: 1.5; font-family: inherit;" oninput="autoGrow(this)"></textarea>
+        </div>
+        <button id="micBtn" onclick="toggleMic()" class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all cursor-pointer" style="background: var(--md-surface-variant); border: none; color: var(--md-on-surface-variant);" title="Voice input">
+          <span class="material-symbols-outlined" style="font-size: 22px;" id="micIcon">mic</span>
+        </button>
+        <button id="sendBtn" onclick="handleSend()" class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 transition-all cursor-pointer text-white" style="background: var(--md-primary); border: none;" title="Send message">
+          <span class="material-symbols-outlined" style="font-size: 22px;">arrow_upward</span>
+        </button>
+      </div>
+      <p class="text-center text-[11px] mt-2.5" style="color: var(--md-outline);">Aiva may make mistakes. Verify important information.</p>
+    </div>
+  </main>
+
+  <!-- Toast -->
+  <div id="toasts" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 items-center pointer-events-none"></div>
+
+  <!-- Hidden file input -->
+  <input type="file" id="importFile" accept=".json" class="hidden" onchange="handleImport(event)">
 
 <script>
-  const micButton = document.getElementById("micButton");
-  let recognizing = false;
-  let recognition;
+/* ============================================================
+   PWA SETUP
+   ============================================================ */
+(function initPWA() {
+  const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="100" fill="#006C4C"/><text x="256" y="350" font-size="300" text-anchor="middle" fill="white" font-family="sans-serif" font-weight="700">A</text></svg>`;
+  const iconUri = 'data:image/svg+xml;base64,' + btoa(svgIcon);
+  const manifest = {
+    name: "Aiva - Smart AI Chat",
+    short_name: "Aiva",
+    description: "Intelligent AI Chat Assistant",
+    start_url: ".",
+    display: "standalone",
+    background_color: "#FBFDF8",
+    theme_color: "#006C4C",
+    icons: [
+      { src: iconUri, sizes: "192x192", type: "image/svg+xml", purpose: "any" },
+      { src: iconUri, sizes: "512x512", type: "image/svg+xml", purpose: "any" }
+    ]
+  };
+  const mBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  document.getElementById('manifestLink').href = URL.createObjectURL(mBlob);
 
-  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.interimResults = false;
+  // Attempt service worker registration (blob SW has limited browser support)
+  if ('serviceWorker' in navigator) {
+    try {
+      const sw = `const C='aiva-v1';self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>e.waitUntil(clients.claim()));self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>new Response('Offline',{status:503}))));});`;
+      navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw], { type: 'application/javascript' }))).catch(() => {});
+    } catch (e) {}
+  }
 
-    recognition.onstart = () => {
-      recognizing = true;
-      micButton.innerHTML = '<span class="material-icons">mic_off</span>';
-    };
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    document.getElementById('installBtn').style.display = 'flex';
+  });
+  window.installPWA = function () {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(r => {
+      deferredPrompt = null;
+      document.getElementById('installBtn').style.display = 'none';
+      toast(r.outcome === 'accepted' ? 'App installed!' : 'Install cancelled');
+    });
+  };
+})();
 
-    recognition.onend = () => {
-      recognizing = false;
-      micButton.innerHTML = '<span class="material-icons">mic</span>';
-    };
+/* ============================================================
+   DEFAULTS & STATE
+   ============================================================ */
+const DEFAULT_PROMPT = `You are Aiva, an intelligent, warm, and emotionally supportive AI assistant. Your role is to help users solve problems involving logic, reasoning, mathematics, and language with clarity, empathy, and precision.
 
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      input.value = transcript;
-      sendMessage(transcript);
-    };
+You must explain complex concepts in simple, relatable terms — never condescending, always respectful.
+
+When addressing logical puzzles (e.g., syllogisms like "all Zogs are Blips, some Blips are Glorbs"), you guide the user step by step, clarifying what can or cannot be logically concluded.
+
+In numerical comparisons, such as determining whether 9.9 is greater than 9.10, you normalize decimal values to two digits (e.g., treating 9.9 as 9.90) and explain that 90 > 10, so 9.90 (or 9.9) is indeed greater than 9.10.
+
+You correct user misunderstandings with kindness, using examples or analogies where helpful.
+
+You must also handle emotional or poetic content with sensitivity and depth, supporting users as both a thinking partner and a comforting voice.
+
+Always maintain a tone that is wise yet warm, logical yet compassionate, and ensure the user feels heard, understood, and empowered to grow through every interaction.
+
+You are created with love by Malik Awais`;
+
+const PRESETS = {
+  forest: { name: 'Forest', swatch: '#006C4C', vars: { '--md-primary':'#006C4C','--user-bubble':'#89F8C7','--user-bubble-text':'#002115','--ai-bubble':'#D4E8FF','--ai-bubble-text':'#0B2540','--chat-bg':'#FBFDF8','--sidebar-bg':'#EFF4F0','--input-bg':'#F2F6F3','--header-bg':'#FBFDF8','--md-on-surface':'#191C1A','--md-on-surface-variant':'#3F4944','--md-outline-variant':'#BFC9C3','--md-surface-variant':'#DBE5DE' }},
+  sunset: { name: 'Sunset', swatch: '#B45309', vars: { '--md-primary':'#B45309','--user-bubble':'#FDE68A','--user-bubble-text':'#451A03','--ai-bubble':'#FECDD3','--ai-bubble-text':'#4C0519','--chat-bg':'#FFFBF5','--sidebar-bg':'#FFF5EB','--input-bg':'#FEF3E2','--header-bg':'#FFFBF5','--md-on-surface':'#1F1B14','--md-on-surface-variant':'#51443A','--md-outline-variant':'#D5C3AD','--md-surface-variant':'#F0E0CC' }},
+  ocean:  { name: 'Ocean',  swatch: '#0369A1', vars: { '--md-primary':'#0369A1','--user-bubble':'#BAE6FD','--user-bubble-text':'#082F49','--ai-bubble':'#C7D2FE','--ai-bubble-text':'#1E1B4B','--chat-bg':'#F8FAFC','--sidebar-bg':'#EFF6FF','--input-bg':'#E8F2FF','--header-bg':'#F8FAFC','--md-on-surface':'#0F172A','--md-on-surface-variant':'#475569','--md-outline-variant':'#CBD5E1','--md-surface-variant':'#E2E8F0' }},
+  rose:   { name: 'Rose',   swatch: '#BE185D', vars: { '--md-primary':'#BE185D','--user-bubble':'#FBCFE8','--user-bubble-text':'#500724','--ai-bubble':'#FDE68A','--ai-bubble-text':'#451A03','--chat-bg':'#FFFBFC','--sidebar-bg':'#FFF1F5','--input-bg':'#FFE8F0','--header-bg':'#FFFBFC','--md-on-surface':'#1C1017','--md-on-surface-variant':'#51434A','--md-outline-variant':'#D5C0CB','--md-surface-variant':'#F0DFE8' }},
+  ember:  { name: 'Ember',  swatch: '#DC2626', vars: { '--md-primary':'#DC2626','--user-bubble':'#FECACA','--user-bubble-text':'#450A0A','--ai-bubble':'#FDE68A','--ai-bubble-text':'#451A03','--chat-bg':'#FFFCFC','--sidebar-bg':'#FFF1F1','--input-bg':'#FFE8E8','--header-bg':'#FFFCFC','--md-on-surface':'#1A0C0C','--md-on-surface-variant':'#514040','--md-outline-variant':'#D5C0C0','--md-surface-variant':'#F0DEDE' }},
+  midnight:{ name: 'Midnight', swatch: '#22D3EE', vars: { '--md-primary':'#22D3EE','--user-bubble':'#164E63','--user-bubble-text':'#CFFAFE','--ai-bubble':'#1E293B','--ai-bubble-text':'#E2E8F0','--chat-bg':'#0F172A','--sidebar-bg':'#1E293B','--input-bg':'#1E293B','--header-bg':'#0F172A','--md-on-surface':'#F1F5F9','--md-on-surface-variant':'#94A3B8','--md-outline-variant':'#334155','--md-surface-variant':'#1E293B' }}
+};
+
+const PICKER_MAP = {
+  '--md-primary': 'cpPrimary', '--user-bubble': 'cpUserBg', '--user-bubble-text': 'cpUserTx',
+  '--ai-bubble': 'cpAiBg', '--ai-bubble-text': 'cpAiTx', '--chat-bg': 'cpChatBg',
+  '--sidebar-bg': 'cpSideBg', '--input-bg': 'cpInputBg', '--md-on-surface': 'cpOnSurf',
+  '--md-outline-variant': 'cpOutVar'
+};
+
+let systemPrompt = localStorage.getItem('aiva_prompt') || DEFAULT_PROMPT;
+let ttsOn = false;
+let isListening = false;
+let recognition = null;
+const chatId = crypto.randomUUID();
+
+/* ============================================================
+   DOM
+   ============================================================ */
+const chatbox = document.getElementById('chatbox');
+const msgInput = document.getElementById('msgInput');
+const welcome = document.getElementById('welcomeScreen');
+const promptEd = document.getElementById('promptEditor');
+const promptCnt = document.getElementById('promptCount');
+const cssEd = document.getElementById('cssEditor');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(function init() {
+  promptEd.value = systemPrompt;
+  updPromptCount();
+  cssEd.value = localStorage.getItem('aiva_css') || '';
+  document.getElementById('userCustomCSS').textContent = cssEd.value;
+  loadTheme();
+  loadChat();
+  setupMic();
+  renderPresets();
+  switchTab('prompt');
+  msgInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
+  });
+  promptEd.addEventListener('input', updPromptCount);
+})();
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+function toggleSidebar() {
+  const open = !sidebar.classList.contains('-translate-x-full');
+  if (open) {
+    sidebar.classList.add('-translate-x-full');
+    overlay.classList.add('hidden');
   } else {
-    micButton.disabled = true;
-    micButton.title = "Voice not supported";
+    sidebar.classList.remove('-translate-x-full');
+    if (window.innerWidth < 768) overlay.classList.remove('hidden');
   }
+}
+function switchTab(name) {
+  document.querySelectorAll('.tpanel').forEach(p => p.classList.add('hidden'));
+  document.querySelectorAll('.stab').forEach(t => { t.style.color = 'var(--md-on-surface-variant)'; t.style.borderBottomColor = 'transparent'; });
+  const panel = document.getElementById('tab-' + name);
+  const tab = document.querySelector(`.stab[data-tab="${name}"]`);
+  if (panel) panel.classList.remove('hidden');
+  if (tab) { tab.style.color = 'var(--md-primary)'; tab.style.borderBottomColor = 'var(--md-primary)'; }
+}
 
-  micButton.addEventListener("click", () => {
-    if (recognizing) {
-      recognition.stop();
-    } else {
-      recognition.start();
+/* ============================================================
+   SYSTEM PROMPT
+   ============================================================ */
+function updPromptCount() { const n = promptEd.value.length; promptCnt.textContent = n + ' char' + (n !== 1 ? 's' : ''); }
+function savePrompt() { systemPrompt = promptEd.value; localStorage.setItem('aiva_prompt', systemPrompt); toast('System prompt saved'); }
+function resetPrompt() { promptEd.value = DEFAULT_PROMPT; systemPrompt = DEFAULT_PROMPT; localStorage.setItem('aiva_prompt', systemPrompt); updPromptCount(); toast('Prompt reset to default'); }
+
+/* ============================================================
+   THEME
+   ============================================================ */
+function setColor(prop, val) {
+  document.documentElement.style.setProperty(prop, val);
+  const pid = PICKER_MAP[prop];
+  if (pid) { const el = document.getElementById(pid); if (el) el.value = val; }
+  saveTheme();
+}
+function saveTheme() {
+  const out = {};
+  Object.keys(PICKER_MAP).forEach(k => { out[k] = getComputedStyle(document.documentElement).getPropertyValue(k).trim(); });
+  localStorage.setItem('aiva_theme', JSON.stringify(out));
+}
+function loadTheme() {
+  const s = localStorage.getItem('aiva_theme');
+  if (!s) return;
+  try {
+    const obj = JSON.parse(s);
+    Object.entries(obj).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+    requestAnimationFrame(() => Object.entries(obj).forEach(([k, v]) => { const pid = PICKER_MAP[k]; if (pid) { const el = document.getElementById(pid); if (el) el.value = v; } }));
+  } catch (e) {}
+}
+function applyPreset(key) {
+  const p = PRESETS[key]; if (!p) return;
+  Object.entries(p.vars).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+  saveTheme();
+  requestAnimationFrame(() => {
+    Object.entries(p.vars).forEach(([k, v]) => { const pid = PICKER_MAP[k]; if (pid) { const el = document.getElementById(pid); if (el) el.value = v; } });
+  });
+  toast('Theme: ' + p.name);
+}
+function renderPresets() {
+  const g = document.getElementById('presetGrid'); g.innerHTML = '';
+  Object.entries(PRESETS).forEach(([k, p]) => {
+    const b = document.createElement('button');
+    b.className = 'flex flex-col items-center gap-1.5 p-2.5 rounded-xl transition-all hover:scale-105 active:scale-95 cursor-pointer';
+    b.style.cssText = 'background:var(--md-surface);border:2px solid var(--md-outline-variant);';
+    b.onclick = () => applyPreset(k);
+    b.innerHTML = `<div class="w-8 h-8 rounded-full shadow-sm" style="background:${p.swatch}"></div><span class="text-[11px] font-medium" style="color:var(--md-on-surface-variant)">${p.name}</span>`;
+    g.appendChild(b);
+  });
+}
+function exportTheme() {
+  const colors = {}; Object.keys(PICKER_MAP).forEach(k => { colors[k] = getComputedStyle(document.documentElement).getPropertyValue(k).trim(); });
+  const data = { theme: colors, css: cssEd.value, prompt: systemPrompt };
+  dl(JSON.stringify(data, null, 2), 'aiva-config.json', 'application/json');
+  toast('Configuration exported');
+}
+function handleImport(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    try {
+      const d = JSON.parse(ev.target.result);
+      if (d.theme) Object.entries(d.theme).forEach(([k, v]) => { document.documentElement.style.setProperty(k, v); const pid = PICKER_MAP[k]; if (pid) { const el = document.getElementById(pid); if (el) el.value = v; } });
+      if (d.css) { cssEd.value = d.css; applyCSS(); }
+      if (d.prompt) { promptEd.value = d.prompt; systemPrompt = d.prompt; localStorage.setItem('aiva_prompt', systemPrompt); updPromptCount(); }
+      saveTheme(); toast('Configuration imported');
+    } catch (err) { toast('Invalid file'); }
+  };
+  r.readAsText(f); e.target.value = '';
+}
+
+/* ============================================================
+   CUSTOM CSS
+   ============================================================ */
+function applyCSS() { document.getElementById('userCustomCSS').textContent = cssEd.value; localStorage.setItem('aiva_css', cssEd.value); toast('Custom CSS applied'); }
+function resetCSS() { cssEd.value = ''; document.getElementById('userCustomCSS').textContent = ''; localStorage.removeItem('aiva_css'); toast('Custom CSS cleared'); }
+
+/* ============================================================
+   CHAT LOGIC
+   ============================================================ */
+function scrollBottom() { chatbox.scrollTop = chatbox.scrollHeight; }
+function hideWelcome() { if (welcome) welcome.style.display = 'none'; }
+
+function fmtMsg(t) {
+  return t
+    .replace(/```(\w*)\n?([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/__(.*?)__/g, '<u>$1</u>')
+    .replace(/_(.*?)_/g, '<em>$1</em>')
+    .replace(/^# (.*?)$/gm, '<h2>$1</h2>')
+    .replace(/\n/g, '<br>');
+}
+
+function makeBubble(text, side) {
+  const row = document.createElement('div');
+  row.className = 'flex mb-3 bubble-anim relative z-10 ' + (side === 'user' ? 'justify-end' : 'justify-start');
+  const bbl = document.createElement('div');
+  bbl.className = 'chat-bubble msg-body max-w-[75%] md:max-w-[60%] px-4 py-3 text-[14px] leading-relaxed';
+  if (side === 'user') {
+    bbl.style.cssText = 'background:var(--user-bubble);color:var(--user-bubble-text);border-radius:20px 20px 4px 20px;';
+  } else {
+    bbl.style.cssText = 'background:var(--ai-bubble);color:var(--ai-bubble-text);border-radius:20px 20px 20px 4px;';
+  }
+  if (text) bbl.innerHTML = fmtMsg(text);
+  bbl.addEventListener('dblclick', () => { if (confirm('Delete this message?')) { row.remove(); saveChat(); checkEmpty(); } });
+  row.appendChild(bbl);
+  return { row, bbl };
+}
+
+function makeTyping() {
+  const row = document.createElement('div');
+  row.className = 'flex mb-3 justify-start bubble-anim relative z-10';
+  row.id = 'typingInd';
+  const bbl = document.createElement('div');
+  bbl.className = 'px-5 py-4';
+  bbl.style.cssText = 'background:var(--ai-bubble);border-radius:20px 20px 20px 4px;';
+  bbl.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+  row.appendChild(bbl);
+  return row;
+}
+
+function getHistory(limit) {
+  const els = chatbox.querySelectorAll('.flex.mb-3.relative');
+  const pairs = [];
+  for (let i = 0; i < els.length; i++) {
+    const el = els[i];
+    const isUser = el.classList.contains('justify-end');
+    if (isUser && els[i + 1] && !els[i + 1].classList.contains('justify-end')) {
+      pairs.push({ user: el.textContent.trim(), ai: els[i + 1].textContent.trim() });
+      i++;
     }
+  }
+  return pairs.slice(-limit);
+}
+
+function handleSend() {
+  const t = msgInput.value.trim(); if (!t) return;
+  msgInput.value = ''; msgInput.style.height = 'auto';
+  sendMessage(t);
+}
+function sendSuggestion(t) { sendMessage(t); }
+
+function sendMessage(text) {
+  hideWelcome();
+  const u = makeBubble(text, 'user');
+  chatbox.appendChild(u.row); scrollBottom(); saveChat();
+
+  const typing = makeTyping();
+  chatbox.appendChild(typing); scrollBottom();
+
+  const ctx = getHistory(5).map(p => `User: ${p.user}\nAiva: ${p.ai}`).join('\n');
+  const full = `${systemPrompt}\n\n${ctx}\nUser: ${text}\nAiva:`;
+
+  let ws;
+  try { ws = new WebSocket("wss://backend.buildpicoapps.com/api/chatbot/chat"); }
+  catch (e) { typing.remove(); appendErr(); return; }
+
+  const ai = makeBubble('', 'ai');
+
+  ws.addEventListener('open', () => {
+    typing.remove();
+    chatbox.appendChild(ai.row); scrollBottom();
+    ws.send(JSON.stringify({ chatId, appId: "the-attack", systemPrompt: full, message: text }));
   });
 
-  function speakText(text) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    window.speechSynthesis.speak(utterance);
+  ws.addEventListener('message', e => { ai.bbl.innerHTML += e.data; scrollBottom(); });
+
+  ws.addEventListener('close', () => {
+    if (!ai.bbl.innerHTML) { typing.remove(); ai.bbl.innerHTML = '<em style="color:var(--md-error)">Connection failed. Try again.</em>'; chatbox.appendChild(ai.row); }
+    saveChat();
+    if (ttsOn && ai.bbl.textContent.trim()) speak(ai.bbl.textContent.trim());
+  });
+
+  ws.addEventListener('error', () => {
+    typing.remove();
+    if (!ai.bbl.innerHTML) { ai.bbl.innerHTML = '<em style="color:var(--md-error)">Connection error.</em>'; chatbox.appendChild(ai.row); }
+    saveChat();
+  });
+}
+
+function appendErr() {
+  const e = makeBubble('Connection failed. Check your internet and try again.', 'ai');
+  chatbox.appendChild(e.row); scrollBottom(); saveChat();
+}
+
+function saveChat() {
+  let html = '';
+  chatbox.querySelectorAll('.flex.mb-3.relative').forEach(m => html += m.outerHTML);
+  localStorage.setItem('aiva_chat', html);
+}
+
+function loadChat() {
+  const s = localStorage.getItem('aiva_chat');
+  if (s && s.trim()) {
+    welcome.style.display = 'none';
+    chatbox.insertAdjacentHTML('beforeend', s);
+    chatbox.querySelectorAll('.flex.mb-3.relative').forEach(row => {
+      const bbl = row.querySelector('.msg-body');
+      if (bbl) bbl.addEventListener('dblclick', () => { if (confirm('Delete this message?')) { row.remove(); saveChat(); checkEmpty(); } });
+    });
+    scrollBottom();
   }
+}
+
+function checkEmpty() { if (!chatbox.querySelector('.flex.mb-3.relative')) welcome.style.display = 'flex'; }
+
+function clearChat() {
+  if (!confirm('Clear all messages? This cannot be undone.')) return;
+  chatbox.querySelectorAll('.flex.mb-3.relative').forEach(m => m.remove());
+  welcome.style.display = 'flex';
+  localStorage.removeItem('aiva_chat');
+  toast('Chat cleared');
+}
+
+function resetMemory() {
+  if (!confirm('Reset AI memory context?')) return;
+  localStorage.removeItem('aiva_context_memory');
+  toast('Memory reset — Aiva starts fresh');
+}
+
+function exportChat() {
+  let txt = 'Aiva Chat Export\n' + '='.repeat(50) + '\n\n';
+  chatbox.querySelectorAll('.flex.mb-3.relative').forEach(m => {
+    const isUser = m.classList.contains('justify-end');
+    const c = m.textContent.trim();
+    if (c) txt += (isUser ? 'You: ' : 'Aiva: ') + c + '\n\n';
+  });
+  dl(txt, 'aiva-chat.txt', 'text/plain');
+  toast('Chat exported');
+}
+
+function dl(content, name, type) {
+  const b = new Blob([content], { type }); const u = URL.createObjectURL(b);
+  const a = document.createElement('a'); a.href = u; a.download = name; a.click(); URL.revokeObjectURL(u);
+}
+
+/* ============================================================
+   TTS
+   ============================================================ */
+function toggleTTS() {
+  ttsOn = !ttsOn;
+  const icon = document.getElementById('ttsIcon');
+  if (ttsOn) { icon.textContent = 'volume_off'; icon.style.color = 'var(--md-primary)'; toast('Text-to-speech ON'); }
+  else { icon.textContent = 'volume_up'; icon.style.color = 'var(--md-on-surface-variant)'; speechSynthesis.cancel(); toast('Text-to-speech OFF'); }
+}
+function speak(t) {
+  if (!ttsOn) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(t.substring(0, 500));
+  u.lang = 'en-US'; u.rate = 1;
+  speechSynthesis.speak(u);
+}
+
+/* ============================================================
+   SPEECH RECOGNITION
+   ============================================================ */
+function setupMic() {
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    const btn = document.getElementById('micBtn');
+    btn.disabled = true; btn.style.opacity = '.35'; btn.title = 'Voice not supported';
+    return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.lang = 'en-US'; recognition.interimResults = false; recognition.continuous = false;
+  recognition.onstart = () => {
+    isListening = true;
+    const btn = document.getElementById('micBtn');
+    btn.style.background = 'var(--md-error)'; btn.style.color = '#fff';
+    btn.classList.add('mic-active');
+    document.getElementById('micIcon').textContent = 'mic_off';
+  };
+  recognition.onend = () => {
+    isListening = false;
+    const btn = document.getElementById('micBtn');
+    btn.style.background = 'var(--md-surface-variant)'; btn.style.color = 'var(--md-on-surface-variant)';
+    btn.classList.remove('mic-active');
+    document.getElementById('micIcon').textContent = 'mic';
+  };
+  recognition.onresult = e => { const t = e.results[0][0].transcript; msgInput.value = t; sendMessage(t); };
+  recognition.onerror = e => {
+    if (e.error !== 'no-speech') toast('Voice error: ' + e.error);
+    recognition.onend();
+  };
+}
+function toggleMic() { if (!recognition) return; isListening ? recognition.stop() : recognition.start(); }
+
+/* ============================================================
+   UTILS
+   ============================================================ */
+function autoGrow(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 128) + 'px'; }
+
+function toast(msg, dur) {
+  dur = dur || 2400;
+  const c = document.getElementById('toasts');
+  const t = document.createElement('div');
+  t.className = 'toast-in px-5 py-3 rounded-xl text-sm font-medium shadow-xl pointer-events-auto';
+  t.style.cssText = 'background:var(--md-on-surface);color:var(--md-surface);';
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => { t.classList.replace('toast-in', 'toast-out'); setTimeout(() => t.remove(), 260); }, dur);
+}
 </script>
-</body>    
-  </html>
+</body>
+</html>
